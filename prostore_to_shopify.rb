@@ -1,17 +1,22 @@
 require 'rubygems'
 require 'csv'
 
-shopify_file = CSV.open("shopify_products.csv", "w")
+shopify_file = CSV.open(ARGV[1], "w")
 ps_image_folder = "http://www.yobelmarket.com/catalog/"
 
 shopify_file << "Handle,Title,Body (HTML),Vendor,Type,Tags,Option1 Name,Option1 Value,Option2 Name,Option2 Value,Option3 Name,Option3 Value,Variant SKU,Variant Grams,Variant Inventory Tracker,Variant Inventory Qty,Variant Inventory Policy,Variant Fulfillment Service,Variant Price,Variant Compare At Price,Variant Requires Shipping,Variant Taxable,Image Src".split(',')
 
-CSV.foreach("product.csv",
+variant = false
+current_handle = ''
+previous_handle = ''
+
+CSV.foreach(ARGV[0],
 			:headers => true) do |pro_stores_row|
 
 	
 	shopify_row = []
-	shopify_row << pro_stores_row[1].gsub(' ', "_").downcase 	#Handle
+	current_handle = pro_stores_row[1].split(":")[0].gsub(/[^0-9a-z ]/i, '').gsub(' ', "_").downcase
+	shopify_row << current_handle							 	#Handle
 	shopify_row << pro_stores_row[1]							#Title
 	shopify_row << pro_stores_row[24]							#Body / Description
 
